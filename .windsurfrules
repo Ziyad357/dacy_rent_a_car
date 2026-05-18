@@ -1,0 +1,59 @@
+# Car Rental Management System — Windsurf Rules
+
+## Stack
+- PHP: 8.4
+- Framework: Laravel 13
+- Frontend: Blade, Tailwind CSS v4, Alpine.js
+- Auth: Laravel Fortify
+- UI Components: Livewire/Flux v2
+
+## Roles & Route Prefixes
+- admin    → /admin/
+- agent    → /agent/
+- customer → /customer/
+
+## Services (app/Services/)
+- AvailabilityService  — check car availability by date range
+- PricingService       — calculate rental price, discount, deposit
+- PenaltyService       — late return, fuel, damage penalties
+- ContractService      — generate contract number, create/close contracts
+- ReportService        — daily/monthly summaries, car utilization
+
+## Business Rules
+
+### Late Return Penalty
+- Per day: daily_rate × 0.5
+
+### Fuel Penalty (based on difference: out → in)
+- full → 3/4 : daily_rate × 0.10
+- 3/4  → 1/2 : daily_rate × 0.20
+- 1/2  → 1/4 : daily_rate × 0.30
+- 1/4  → empty: daily_rate × 0.40
+
+### Contract Number Format
+- CNT-YYYY-XXXXX  (e.g. CNT-2025-00001, auto-increment)
+
+## Database Tables
+users, customers, cars, reservations, contracts,
+penalties, payments, car_maintenance, activity_logs
+
+## Enums
+- cars.fuel_type:        petrol, diesel, electric, hybrid
+- cars.transmission:     manual, automatic
+- cars.status:           available, rented, maintenance, reserved
+- reservations.status:   pending, approved, active, completed, cancelled
+- contracts.fuel_level:  full, three_quarters, half, quarter, empty
+- penalties.type:        late_return, damage, fuel, other
+- payments.type:         deposit, rental, penalty, refund
+- payments.method:       cash, card, transfer
+- car_maintenance.type:  routine, repair, inspection
+
+## Currency
+- Default: AZN
+
+## Key Conventions
+- Use Form Requests for all CRUD validation
+- Log every create/update/delete in activity_logs
+- Use SoftDeletes on: customers, cars, reservations
+- PDF contracts via barryvdh/laravel-dompdf
+- DataTables via yajra/laravel-datatables-oracle
